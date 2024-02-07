@@ -114,14 +114,12 @@ int main() {
     // set up vertex data, buffer(s), and configure vertex attributes
     // --------------------------------------------------------------
     float vertices[] = {
-         0.5f,  0.5f, 0.0f,
-        -0.5f,  0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f
+         0.0f,  0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f,
+         0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f
     };
     unsigned indices[] = {
-        0, 1, 2,
-        0, 2, 3
+        0, 1, 2
     };
 
     unsigned VAO, VBO, EBO;
@@ -137,8 +135,10 @@ int main() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -157,13 +157,13 @@ int main() {
         glUseProgram(shaderProgram);
 
         // update uniform
-        float blueValue = sin(glfwGetTime()) / 2.0f + 0.5f;
+        float blueValue = sin((float)glfwGetTime()) / 2.0f + 0.5f;
         int vertexColorLocation = glGetUniformLocation(shaderProgram, "myColor");
         glUniform4f(vertexColorLocation, 0.0f, 0.0f, blueValue, 1.0f);
 
         // render
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 
         // swap the buffers and call events
         glfwSwapBuffers(window);

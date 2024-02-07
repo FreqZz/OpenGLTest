@@ -1,8 +1,7 @@
 /.vs
 /x64
 /x86
-OpenGLTest
-OpenGLTest.vcxproj.user
+*.vcxproj.user
 /vcpkg_installed
 vcpkg.json
 vcpkg-configuration.json
