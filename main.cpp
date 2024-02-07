@@ -6,6 +6,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "shader.hpp"
+
 
 #define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 600
@@ -55,60 +57,7 @@ int main() {
 
     // build and compile shaders
     // -------------------------
-    int success;
-    char infoLog[512];
-
-    // vertex shader
-    std::ifstream vertexShaderFile(VERTEX_SHADER_PATH, std::ios::in | std::ios::binary | std::ios::ate);
-    int vertexShaderLength = (int)vertexShaderFile.tellg();
-    vertexShaderFile.seekg(0, std::ios::beg);
-    char* vertexShaderSource = new char[vertexShaderLength + 1];
-    vertexShaderFile.read(vertexShaderSource, vertexShaderLength);
-    vertexShaderSource[vertexShaderLength] = '\0';
-
-    unsigned vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-    delete[] vertexShaderSource;
-
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(vertexShader, sizeof(infoLog), NULL, infoLog);
-        std::cout << "Failed to compile vertex shader\n" << infoLog << std::endl;
-    }
-
-    //fragment shader
-    std::ifstream fragmentShaderFile(FRAGMENT_SHADER_PATH, std::ios::in | std::ios::binary | std::ios::ate);
-    int fragmentShaderLength = (int)fragmentShaderFile.tellg();
-    fragmentShaderFile.seekg(0, std::ios::beg);
-    char* fragmentShaderSource = new char[fragmentShaderLength + 1];
-    fragmentShaderFile.read(fragmentShaderSource, fragmentShaderLength);
-    fragmentShaderSource[fragmentShaderLength] = '\0';
-
-    unsigned fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    delete[] fragmentShaderSource;
-
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) {
-        glGetShaderInfoLog(fragmentShader, sizeof(infoLog), NULL, infoLog);
-        std::cout << "Failed to compile fragment shader\n" << infoLog << std::endl;
-    }
-
-    // link shaders
-    unsigned shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success) {
-        glGetProgramInfoLog(shaderProgram, sizeof(infoLog), NULL, infoLog);
-        std::cout << "Failed to link shader program\n" << infoLog << std::endl;
-    }
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    Shader shader(VERTEX_SHADER_PATH, FRAGMENT_SHADER_PATH);
     
 
     // set up vertex data, buffer(s), and configure vertex attributes
@@ -154,12 +103,13 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
+        shader.use();
 
         // update uniform
-        float blueValue = sin((float)glfwGetTime()) / 2.0f + 0.5f;
-        int vertexColorLocation = glGetUniformLocation(shaderProgram, "myColor");
-        glUniform4f(vertexColorLocation, 0.0f, 0.0f, blueValue, 1.0f);
+        /* float blueValue = sin((float)glfwGetTime()) / 2.0f + 0.5f;
+         * int vertexColorLocation = glGetUniformLocation(shaderProgram, "myColor");
+         * glUniform4f(vertexColorLocation, 0.0f, 0.0f, blueValue, 1.0f);
+         */
 
         // render
         glBindVertexArray(VAO);
@@ -176,7 +126,6 @@ int main() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    glDeleteProgram(shaderProgram);
 
     glfwTerminate();
     return 0;
