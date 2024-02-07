@@ -150,11 +150,18 @@ int main() {
         // input
         processInput(window);
 
-        // render
+        // clear the colorbuffer
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
+
+        // update uniform
+        float blueValue = sin(glfwGetTime()) / 2.0f + 0.5f;
+        int vertexColorLocation = glGetUniformLocation(shaderProgram, "outColor");
+        glUniform4f(vertexColorLocation, 0.0f, 0.0f, blueValue, 1.0f);
+
+        // render
         glBindVertexArray(VAO);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
