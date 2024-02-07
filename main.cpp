@@ -158,7 +158,7 @@ int main() {
 
         // update uniform
         float blueValue = sin(glfwGetTime()) / 2.0f + 0.5f;
-        int vertexColorLocation = glGetUniformLocation(shaderProgram, "outColor");
+        int vertexColorLocation = glGetUniformLocation(shaderProgram, "myColor");
         glUniform4f(vertexColorLocation, 0.0f, 0.0f, blueValue, 1.0f);
 
         // render
