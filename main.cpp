@@ -92,7 +92,7 @@ int main() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-
+    float tmp[4] = {0.0f, 0.0f, 0.0f, 1.0f};
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window)) {
@@ -106,10 +106,8 @@ int main() {
         shader.use();
 
         // update uniform
-        /* float blueValue = sin((float)glfwGetTime()) / 2.0f + 0.5f;
-         * int vertexColorLocation = glGetUniformLocation(shaderProgram, "myColor");
-         * glUniform4f(vertexColorLocation, 0.0f, 0.0f, blueValue, 1.0f);
-         */
+        shader.uniformFloat("offset_x", {sin((float)glfwGetTime())});
+        
 
         // render
         glBindVertexArray(VAO);

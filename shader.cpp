@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <initializer_list>
 
 Shader::Shader(const char* vShaderPath, const char* fShaderPath) {
     int success;
@@ -70,4 +71,41 @@ Shader::~Shader() {
 
 void Shader::use() {
     glUseProgram(ID);
+}
+
+void Shader::uniformInt(const char* uniformName, std::initializer_list<int> valueList) {
+    switch (valueList.size()) {
+        case 1:
+            glUniform1iv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
+            break;
+        case 2:
+            glUniform2iv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
+            break;
+        case 3:
+            glUniform3iv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
+            break;
+        case 4:
+            glUniform4iv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
+            break;
+        default:
+            std::cout << "Invalid amount of inputs for uniform." << std::endl;
+    }
+}
+void Shader::uniformFloat(const char* uniformName, std::initializer_list<float> valueList) {
+    switch (valueList.size()) {
+        case 1:
+            glUniform1fv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
+            break;
+        case 2:
+            glUniform2fv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
+            break;
+        case 3:
+            glUniform3fv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
+            break;
+        case 4:
+            glUniform4fv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
+            break;
+        default:
+            std::cout << "Invalid amount of inputs for uniform." << std::endl;
+    }
 }
