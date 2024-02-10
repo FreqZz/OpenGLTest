@@ -147,12 +147,6 @@ int main() {
     shader.setVec("texture1", {0});
     shader.setVec("texture2", {1});
 
-    glm::mat4 trans(1.0f);
-    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-    trans = glm::translate(trans, glm::vec3(0.0f, 0.5f, 0.0f));
-    
-    shader.setMat("transform", false, trans);
-
     // render loop
     // -----------
     while (!glfwWindowShouldClose(window)) {
@@ -171,8 +165,11 @@ int main() {
         shader.use();
 
         // update uniform
-        
-        
+        glm::mat4 trans(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5, -0.5f, 0.0f));
+        trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+
+        shader.setMat("transform", false, trans);
 
         // render
         glBindVertexArray(VAO);
