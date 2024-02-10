@@ -3,6 +3,8 @@
 
 #include <initializer_list>
 
+#include <glm/glm.hpp>
+
 
 class Shader {
 public:
@@ -13,8 +15,11 @@ public:
 
     void use();
 
-    void uniformInt(const char* uniformName, std::initializer_list<int> valueList);
-    void uniformFloat(const char* uniformName, std::initializer_list<float> valueList);
+    template <typename T>
+    void setVec(const char* uniformName, std::initializer_list<T> data);
+
+    template <glm::length_t col, glm::length_t row>
+    void setMat(const char* uniformName, bool transpose, const glm::mat<col, row, glm::f32, glm::defaultp>& data);
 };
 
 #endif

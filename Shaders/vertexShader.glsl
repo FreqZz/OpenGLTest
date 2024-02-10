@@ -7,10 +7,10 @@ layout (location = 2) in vec2 aTexCoord;
 out vec3 myColor;
 out vec2 TexCoord;
 
-uniform float offset_y;
+uniform mat4 transform;
 
 void main() {
-    gl_Position = vec4(aPos.x, aPos.y + offset_y, aPos.z, 1.0);
+    gl_Position = transform * vec4(aPos.x, aPos.y, aPos.z, 1.0);
     myColor = aColor;
     TexCoord = aTexCoord;
     TexCoord = aTexCoord;

@@ -7,6 +7,10 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "shader.hpp"
 
 
@@ -140,9 +144,14 @@ int main() {
 
     // tell opengl for each sampler to which texture unit it belongs to
     shader.use();
-    shader.uniformInt("texture1", {0});
-    shader.uniformInt("texture2", {1});
+    shader.setVec("texture1", {0});
+    shader.setVec("texture2", {1});
 
+    glm::mat4 trans(1.0f);
+    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+    trans = glm::translate(trans, glm::vec3(0.0f, 0.5f, 0.0f));
+    
+    shader.setMat("transform", false, trans);
 
     // render loop
     // -----------
@@ -162,7 +171,7 @@ int main() {
         shader.use();
 
         // update uniform
-        shader.uniformFloat("offset_y", {sin((float)glfwGetTime())});
+        
         
 
         // render

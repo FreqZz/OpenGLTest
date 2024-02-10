@@ -6,6 +6,10 @@
 #include <string>
 #include <fstream>
 #include <initializer_list>
+#include <type_traits>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 Shader::Shader(const char* vShaderPath, const char* fShaderPath) {
     int success;
@@ -73,39 +77,96 @@ void Shader::use() {
     glUseProgram(ID);
 }
 
-void Shader::uniformInt(const char* uniformName, std::initializer_list<int> valueList) {
-    switch (valueList.size()) {
-        case 1:
-            glUniform1iv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
-            break;
-        case 2:
-            glUniform2iv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
-            break;
-        case 3:
-            glUniform3iv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
-            break;
-        case 4:
-            glUniform4iv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
-            break;
-        default:
-            std::cout << "Invalid amount of inputs for uniform." << std::endl;
+template <typename T>
+void Shader::setVec(const char* uniformName, std::initializer_list<T> data) {
+    if constexpr (std::is_same<T, int>::value) {
+        switch (data.size()) {
+            case 1:
+                glUniform1iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
+                break;
+            case 2:
+                glUniform2iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
+                break;
+            case 3:
+                glUniform3iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
+                break;
+            case 4:
+                glUniform4iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
+                break;
+            default:
+                std::cout << "Invalid amount of inputs for uniform." << std::endl;
+        }
+    }
+    else if constexpr (std::is_same<T, float>::value) {
+        switch (data.size()) {
+            case 1:
+                glUniform1fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
+                break;
+            case 2:
+                glUniform2fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
+                break;
+            case 3:
+                glUniform3fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
+                break;
+            case 4:
+                glUniform4fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
+                break;
+            default:
+                std::cout << "Invalid amount of inputs for uniform." << std::endl;
+        }
     }
 }
-void Shader::uniformFloat(const char* uniformName, std::initializer_list<float> valueList) {
-    switch (valueList.size()) {
-        case 1:
-            glUniform1fv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
-            break;
+
+template <glm::length_t col, glm::length_t row> 
+void Shader::setMat(const char* uniformName, bool transpose, const glm::mat<col, row, glm::f32, glm::defaultp>& data)
+{
+    switch (col) {
         case 2:
-            glUniform2fv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
-            break;
+            switch (row) {
+                case 2:
+                    glUniformMatrix2fv(glGetUniformLocation(ID, uniformName), 1, transpose, glm::value_ptr(data));
+                    break;
+                case 3:
+                    glUniformMatrix2x3fv(glGetUniformLocation(ID, uniformName), 1, transpose, glm::value_ptr(data));
+                    break;
+                case 4:
+                    glUniformMatrix2x4fv(glGetUniformLocation(ID, uniformName), 1, transpose, glm::value_ptr(data));
+                    break;
+                default:
+                    break;
+            }
         case 3:
-            glUniform3fv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
-            break;
+            switch (row) {
+                case 2:
+                    glUniformMatrix3x2fv(glGetUniformLocation(ID, uniformName), 1, transpose, glm::value_ptr(data));
+                    break;
+                case 3:
+                    glUniformMatrix3fv(glGetUniformLocation(ID, uniformName), 1, transpose, glm::value_ptr(data));
+                    break;
+                case 4:
+                    glUniformMatrix3x4fv(glGetUniformLocation(ID, uniformName), 1, transpose, glm::value_ptr(data));
+                    break;
+                default:
+                    break;
+            }
         case 4:
-            glUniform4fv(glGetUniformLocation(ID, uniformName), 1, valueList.begin());
-            break;
+            switch (row) {
+                case 2:
+                    glUniformMatrix4x2fv(glGetUniformLocation(ID, uniformName), 1, transpose, glm::value_ptr(data));
+                    break;
+                case 3:
+                    glUniformMatrix4x3fv(glGetUniformLocation(ID, uniformName), 1, transpose, glm::value_ptr(data));
+                    break;
+                case 4:
+                    glUniformMatrix4fv(glGetUniformLocation(ID, uniformName), 1, transpose, glm::value_ptr(data));
+                    break;
+                default:
+                    break;
+            }
         default:
-            std::cout << "Invalid amount of inputs for uniform." << std::endl;
+            break;
     }
 }
+template void Shader::setVec(const char* uniformName, std::initializer_list<int> data);
+template void Shader::setVec(const char* uniformName, std::initializer_list<float> data);
+template void Shader::setMat(const char* uniformName, bool transpose, const glm::mat<4, 4, glm::f32, glm::defaultp>& data);
