@@ -19,7 +19,7 @@ public:
     void setVec(const char* uniformName, std::initializer_list<T> data);
 
     template <glm::length_t col, glm::length_t row>
-    void setMat(const char* uniformName, bool transpose, const glm::mat<col, row, glm::f32, glm::defaultp>& data);
+    void setMat(const char* uniformName, const glm::mat<col, row, glm::f32, glm::defaultp>& data);
 };
 
 #endif
