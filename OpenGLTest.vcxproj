@@ -146,10 +146,12 @@
     <None Include="Shaders\vertexShader.glsl" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\camera.hpp" />
     <ClInclude Include="src\shader.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

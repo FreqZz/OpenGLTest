@@ -12,6 +12,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "shader.hpp"
+#include "camera.hpp"
 
 
 #define WINDOW_WIDTH  800
@@ -19,18 +20,13 @@
 
 
 // camera
-glm::vec3 cameraPos(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp(0.0f, 1.0f, 0.0f);
+Camera camera(0.0f, 0.0f, 3.0f, -90.0f, 0.0f);
 
 float lastX = (float)WINDOW_WIDTH / 2.0;
 float lastY = (float)WINDOW_HEIGHT / 2.0;
-float yaw = -90.0f;
-float pitch = 0.0f;
-float fov = 45.0f;
 
 // timing
-double deltaTime, lastFrame;
+float deltaTime, lastFrame;
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -232,7 +228,7 @@ int main() {
     // -----------
     while (!glfwWindowShouldClose(window)) {
         // time update
-        double currentFrame = glfwGetTime();
+        float currentFrame = (float)glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
@@ -253,7 +249,7 @@ int main() {
         // update uniform
         
         // view transformation
-        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        glm::mat4 view = camera.getViewMatrix();
         shader.setMat("view", view);
 
         // render
@@ -299,23 +295,7 @@ void mouse_callback(GLFWwindow* window, double xPosIn, double yPosIn) {
     lastX = xPos;
     lastY = yPos;
 
-    float sensitivity = 0.05f;
-    xOffset *= sensitivity;
-    yOffset *= sensitivity;
-
-    yaw += xOffset;
-    pitch += yOffset;
-
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
-
-    glm::vec3 front;
-    front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    front.y = sin(glm::radians(pitch));
-    front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(front);
+    camera.processMouseMovement(xOffset, yOffset, true);
 }
 
 void processInput(GLFWwindow* window) {
@@ -325,15 +305,15 @@ void processInput(GLFWwindow* window) {
 
     const float cameraSpeed = 2.5f * (float)deltaTime;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        cameraPos += cameraSpeed * cameraFront;
+        camera.move(Camera::Forward, deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        cameraPos -= cameraSpeed * cameraFront;
+        camera.move(Camera::Backward, deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        camera.move(Camera::Left, deltaTime);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        camera.move(Camera::Right, deltaTime);
     }
 }
