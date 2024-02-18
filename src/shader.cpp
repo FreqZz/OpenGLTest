@@ -117,7 +117,7 @@ void Shader::setVec(const char* uniformName, std::initializer_list<T> data) {
     }
 }
 
-template <glm::length_t col, glm::length_t row> 
+template <glm::length_t col, glm::length_t row>
 void Shader::setMat(const char* uniformName, const glm::mat<col, row, glm::f32, glm::defaultp>& data)
 {
     switch (col) {

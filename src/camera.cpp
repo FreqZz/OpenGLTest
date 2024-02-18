@@ -9,7 +9,7 @@ Camera::Camera(float posX, float posY, float posZ, float yawInput, float pitchIn
     yaw = yawInput;
     pitch = pitchInput;
 
-    movementSpeed = 2.5f;
+    movementSpeed = 5.0f;
     mouseSensitivity = 0.05f;
     fov = 45.0f;
 }
