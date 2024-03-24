@@ -93,8 +93,6 @@ void Shader::setVec(const char* uniformName, std::initializer_list<T> data) {
             case 4:
                 glUniform4iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
                 break;
-            default:
-                std::cout << "Invalid amount of inputs for uniform." << std::endl;
         }
     }
     else if constexpr (std::is_same<T, float>::value) {
@@ -111,18 +109,32 @@ void Shader::setVec(const char* uniformName, std::initializer_list<T> data) {
             case 4:
                 glUniform4fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
                 break;
-            default:
-                std::cout << "Invalid amount of inputs for uniform." << std::endl;
         }
     }
 }
 
-template <glm::length_t col, glm::length_t row>
-void Shader::setMat(const char* uniformName, const glm::mat<col, row, glm::f32, glm::defaultp>& data)
-{
-    switch (col) {
+template <glm::length_t L>
+void Shader::setVec(const char* uniformName, const glm::vec<L, float, glm::defaultp>& data) {
+    switch (L) {
         case 2:
-            switch (row) {
+            glUniform2fv(glGetUniformLocation(ID, uniformName), 1, glm::value_ptr(data));
+            break;
+        case 3:
+            glUniform3fv(glGetUniformLocation(ID, uniformName), 1, glm::value_ptr(data));
+            break;
+        case 4:
+            glUniform4fv(glGetUniformLocation(ID, uniformName), 1, glm::value_ptr(data));
+            break;
+        default:
+            break;
+    }
+}
+
+template <glm::length_t C, glm::length_t R>
+void Shader::setMat(const char* uniformName, const glm::mat<C, R, glm::f32, glm::defaultp>& data) {
+    switch (C) {
+        case 2:
+            switch (R) {
                 case 2:
                     glUniformMatrix2fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
                     break;
@@ -135,8 +147,9 @@ void Shader::setMat(const char* uniformName, const glm::mat<col, row, glm::f32, 
                 default:
                     break;
             }
+            break;
         case 3:
-            switch (row) {
+            switch (R) {
                 case 2:
                     glUniformMatrix3x2fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
                     break;
@@ -149,8 +162,9 @@ void Shader::setMat(const char* uniformName, const glm::mat<col, row, glm::f32, 
                 default:
                     break;
             }
+            break;
         case 4:
-            switch (row) {
+            switch (R) {
                 case 2:
                     glUniformMatrix4x2fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
                     break;
@@ -163,10 +177,19 @@ void Shader::setMat(const char* uniformName, const glm::mat<col, row, glm::f32, 
                 default:
                     break;
             }
+            break;
         default:
             break;
     }
 }
+
 template void Shader::setVec(const char* uniformName, std::initializer_list<int> data);
 template void Shader::setVec(const char* uniformName, std::initializer_list<float> data);
-template void Shader::setMat(const char* uniformName, const glm::mat<4, 4, glm::f32, glm::defaultp>& data);
+
+template void Shader::setVec(const char* uniformName, const glm::vec2& data);
+template void Shader::setVec(const char* uniformName, const glm::vec3& data);
+template void Shader::setVec(const char* uniformName, const glm::vec4& data);
+
+template void Shader::setMat(const char* uniformName, const glm::mat2& data);
+template void Shader::setMat(const char* uniformName, const glm::mat3& data);
+template void Shader::setMat(const char* uniformName, const glm::mat4& data);
