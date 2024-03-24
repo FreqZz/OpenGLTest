@@ -77,119 +77,73 @@ void Shader::use() {
     glUseProgram(ID);
 }
 
-template <typename T>
-void Shader::setVec(const char* uniformName, std::initializer_list<T> data) {
-    if constexpr (std::is_same<T, int>::value) {
-        switch (data.size()) {
-            case 1:
-                glUniform1iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
-                break;
-            case 2:
-                glUniform2iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
-                break;
-            case 3:
-                glUniform3iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
-                break;
-            case 4:
-                glUniform4iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
-                break;
-        }
-    }
-    else if constexpr (std::is_same<T, float>::value) {
-        switch (data.size()) {
-            case 1:
-                glUniform1fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
-                break;
-            case 2:
-                glUniform2fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
-                break;
-            case 3:
-                glUniform3fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
-                break;
-            case 4:
-                glUniform4fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
-                break;
-        }
-    }
-}
-
-template <glm::length_t L>
-void Shader::setVec(const char* uniformName, const glm::vec<L, float, glm::defaultp>& data) {
-    switch (L) {
+void Shader::setVec(const char* uniformName, std::initializer_list<int> data) {
+    switch (data.size()) {
+        case 1:
+            glUniform1iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
+            break;
         case 2:
-            glUniform2fv(glGetUniformLocation(ID, uniformName), 1, glm::value_ptr(data));
+            glUniform2iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
             break;
         case 3:
-            glUniform3fv(glGetUniformLocation(ID, uniformName), 1, glm::value_ptr(data));
+            glUniform3iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
             break;
         case 4:
-            glUniform4fv(glGetUniformLocation(ID, uniformName), 1, glm::value_ptr(data));
-            break;
-        default:
+            glUniform4iv(glGetUniformLocation(ID, uniformName), 1, data.begin());
             break;
     }
 }
-
-template <glm::length_t C, glm::length_t R>
-void Shader::setMat(const char* uniformName, const glm::mat<C, R, glm::f32, glm::defaultp>& data) {
-    switch (C) {
+void Shader::setVec(const char* uniformName, std::initializer_list<float> data) {
+    switch (data.size()) {
+        case 1:
+            glUniform1fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
+            break;
         case 2:
-            switch (R) {
-                case 2:
-                    glUniformMatrix2fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
-                    break;
-                case 3:
-                    glUniformMatrix2x3fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
-                    break;
-                case 4:
-                    glUniformMatrix2x4fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
-                    break;
-                default:
-                    break;
-            }
+            glUniform2fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
             break;
         case 3:
-            switch (R) {
-                case 2:
-                    glUniformMatrix3x2fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
-                    break;
-                case 3:
-                    glUniformMatrix3fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
-                    break;
-                case 4:
-                    glUniformMatrix3x4fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
-                    break;
-                default:
-                    break;
-            }
+            glUniform3fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
             break;
         case 4:
-            switch (R) {
-                case 2:
-                    glUniformMatrix4x2fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
-                    break;
-                case 3:
-                    glUniformMatrix4x3fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
-                    break;
-                case 4:
-                    glUniformMatrix4fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
-                    break;
-                default:
-                    break;
-            }
-            break;
-        default:
+            glUniform4fv(glGetUniformLocation(ID, uniformName), 1, data.begin());
             break;
     }
 }
 
-template void Shader::setVec(const char* uniformName, std::initializer_list<int> data);
-template void Shader::setVec(const char* uniformName, std::initializer_list<float> data);
+void Shader::setVec(const char* uniformName, const glm::vec2& data) {
+    glUniform2fv(glGetUniformLocation(ID, uniformName), 1, glm::value_ptr(data));
+}
+void Shader::setVec(const char* uniformName, const glm::vec3& data) {
+    glUniform3fv(glGetUniformLocation(ID, uniformName), 1, glm::value_ptr(data));
+}
+void Shader::setVec(const char* uniformName, const glm::vec4& data) {
+    glUniform4fv(glGetUniformLocation(ID, uniformName), 1, glm::value_ptr(data));
+}
 
-template void Shader::setVec(const char* uniformName, const glm::vec2& data);
-template void Shader::setVec(const char* uniformName, const glm::vec3& data);
-template void Shader::setVec(const char* uniformName, const glm::vec4& data);
-
-template void Shader::setMat(const char* uniformName, const glm::mat2& data);
-template void Shader::setMat(const char* uniformName, const glm::mat3& data);
-template void Shader::setMat(const char* uniformName, const glm::mat4& data);
+void Shader::setMat(const char* uniformName, const glm::mat2x2& data) {
+    glUniformMatrix2fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
+}
+void Shader::setMat(const char* uniformName, const glm::mat2x3& data) {
+    glUniformMatrix2x3fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
+}
+void Shader::setMat(const char* uniformName, const glm::mat2x4& data) {
+    glUniformMatrix2x4fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
+}
+void Shader::setMat(const char* uniformName, const glm::mat3x2& data) {
+    glUniformMatrix3x2fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
+}
+void Shader::setMat(const char* uniformName, const glm::mat3x3& data) {
+    glUniformMatrix3fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
+}
+void Shader::setMat(const char* uniformName, const glm::mat3x4& data) {
+    glUniformMatrix3x4fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
+}
+void Shader::setMat(const char* uniformName, const glm::mat4x2& data) {
+    glUniformMatrix4x2fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
+}
+void Shader::setMat(const char* uniformName, const glm::mat4x3& data) {
+    glUniformMatrix4x3fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
+}
+void Shader::setMat(const char* uniformName, const glm::mat4x4& data) {
+    glUniformMatrix4fv(glGetUniformLocation(ID, uniformName), 1, GL_FALSE, glm::value_ptr(data));
+}

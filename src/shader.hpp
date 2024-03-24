@@ -15,13 +15,22 @@ public:
 
     void use();
 
-    template <typename T>
-    void setVec(const char* uniformName, std::initializer_list<T> data);
-    template <glm::length_t L>
-    void setVec(const char* uniformName, const glm::vec<L, float, glm::defaultp>& data);
+    void setVec(const char* uniformName, std::initializer_list<int> data);
+    void setVec(const char* uniformName, std::initializer_list<float> data);
+    
+    void setVec(const char* uniformName, const glm::vec2& data);
+    void setVec(const char* uniformName, const glm::vec3& data);
+    void setVec(const char* uniformName, const glm::vec4& data);
 
-    template <glm::length_t C, glm::length_t R>
-    void setMat(const char* uniformName, const glm::mat<C, R, glm::f32, glm::defaultp>& data);
+    void setMat(const char* uniformName, const glm::mat2x2& data);
+    void setMat(const char* uniformName, const glm::mat2x3& data);
+    void setMat(const char* uniformName, const glm::mat2x4& data);
+    void setMat(const char* uniformName, const glm::mat3x2& data);
+    void setMat(const char* uniformName, const glm::mat3x3& data);
+    void setMat(const char* uniformName, const glm::mat3x4& data);
+    void setMat(const char* uniformName, const glm::mat4x2& data);
+    void setMat(const char* uniformName, const glm::mat4x3& data);
+    void setMat(const char* uniformName, const glm::mat4x4& data);
 };
 
 #endif
