@@ -68,10 +68,6 @@ Shader::Shader(const char* vShaderPath, const char* fShaderPath) {
     glDeleteShader(fShader);
 }
 
-Shader::~Shader() {
-    glDeleteProgram(ID);
-}
-
 
 void Shader::use() {
     glUseProgram(ID);

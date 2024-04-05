@@ -11,7 +11,6 @@ public:
     unsigned ID;
 
     Shader(const char* vShaderPath, const char* fShaderPath);
-    ~Shader();
 
     void use();
 
